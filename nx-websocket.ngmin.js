@@ -8,7 +8,7 @@
     app = angular.module('nx', []);
   }
   app.provider('nxWebsocket', NxWebsocket = function () {
-    var api, config, connect, getter, isScope, nxPaket, nxWebsocket, openSockets, socket, uuid;
+    var api, config, connect, getter, isScope, loc, nxPaket, nxWebsocket, openSockets, protocol, socket, uri, uuid;
     openSockets = {};
     uuid = function () {
       return Math.random();
@@ -16,8 +16,14 @@
     isScope = function (scope) {
       return typeof scope === 'object' && typeof scope.$emit === 'function';
     };
+    loc = window.location;
+    protocol = 'ws';
+    if (loc.protocol === 'https:') {
+      protocol += 's';
+    }
+    uri = '{protocol}://{loc.host}';
     config = {
-      uri: 'ws://localhost',
+      uri: uri,
       protocol: void 0,
       timeout: 500,
       socket: {
@@ -142,14 +148,14 @@
         head = packet.head;
         body = packet.body;
         if (!head.response) {
-          return this._emit(this.options.socket.broadcast, body);
+          return this._emit(this.options.socket.broadcast, body, head);
         }
         response = this.responses[head.response];
         if (typeof response === 'function') {
-          return response.call(this, body);
+          return response.call(this, body, head);
         }
         return response.$apply(function () {
-          return response.$emit(_this.options.socket.emit, body);
+          return response.$emit(_this.options.socket.emit, body, head);
         });
       };
       nxWebsocket.prototype._close = function (err) {
