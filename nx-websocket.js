@@ -25,7 +25,7 @@
     if (loc.protocol === "https:") {
       protocol += "s";
     }
-    uri = "{protocol}://{loc.host}";
+    uri = "" + protocol + "://" + loc.host;
     config = {
       uri: uri,
       protocol: void 0,
