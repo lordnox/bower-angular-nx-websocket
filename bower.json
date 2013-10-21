@@ -1,0 +1,5 @@
+{
+  "name": "nx-websocket-service",
+  "version": "0.0.1",
+  "main": "nx-websocket.min.js"
+}
